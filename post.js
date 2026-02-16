@@ -1,9 +1,12 @@
+let allProducts = []; // store all products globally
+
 const loadPost = () => {
     const url = "https://fakestoreapi.com/products";
 
     fetch(url)
         .then((res) => res.json())
         .then((data) => {
+            allProducts = data; // store all products
             displayPost(data);
         });
 };
@@ -12,7 +15,7 @@ const displayPost = (posts) => {
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
 
-    // show only first 2 posts
+    // show only first 8 posts
     posts.slice(0, 8).forEach((post) => {
         const postCard = document.createElement("div");
 
@@ -69,13 +72,46 @@ const displayPost = (posts) => {
 
         cardContainer.appendChild(postCard);
 
-        // Add event listener for modal
+        // Modal event (kept same)
         const detailsButton = postCard.querySelector(".details-btn");
         detailsButton.addEventListener("click", () => showModal(post));
     });
 };
 
-// Function to show modal
+
+// ============================
+    // CATEGORY FILTER 
+// ============================
+
+document.addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("category-btn")) {
+
+        // remove active from all
+        document.querySelectorAll(".category-btn")
+            .forEach(btn => btn.classList.remove("active"));
+
+        // add active to clicked
+        e.target.classList.add("active");
+
+        const category = e.target.dataset.category;
+
+        if (category === "all") {
+            displayPost(allProducts);
+        } else {
+            const filteredProducts = allProducts.filter(product =>
+                product.category === category
+            );
+            displayPost(filteredProducts);
+        }
+    }
+});
+
+
+// ============================
+    // MODAL 
+// ============================
+
 const showModal = (post) => {
     document.getElementById("modal-image").src = post.image;
     document.getElementById("modal-image").alt = post.title;
@@ -86,22 +122,17 @@ const showModal = (post) => {
     document.getElementById("modal-rate").textContent = post.rating.rate;
     document.getElementById("modal-count").textContent = `(${post.rating.count})`;
 
-    // Show modal
     document.getElementById("product-modal").classList.remove("hidden");
 };
 
-// Close modal
 document.getElementById("close-modal").addEventListener("click", () => {
     document.getElementById("product-modal").classList.add("hidden");
 });
 
-// Optional: close modal when clicking outside content
 document.getElementById("product-modal").addEventListener("click", (e) => {
     if (e.target.id === "product-modal") {
         document.getElementById("product-modal").classList.add("hidden");
     }
 });
 
-
-loadPost()
-
+loadPost();
