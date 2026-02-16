@@ -12,9 +12,8 @@ const displayPost = (posts) => {
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
 
-    // show only first 2 like screenshot
-    posts.forEach((post) => {
-
+    // show only first 2 posts
+    posts.slice(0, 8).forEach((post) => {
         const postCard = document.createElement("div");
 
         postCard.innerHTML = `
@@ -37,7 +36,7 @@ const displayPost = (posts) => {
                         </span>
 
                         <div class="flex items-center gap-1 text-yellow-500">
-                            ⭐ ${post.rating.rate}
+                          <i class="fa-solid fa-star"></i> ${post.rating.rate}
                             <span class="text-gray-500 text-sm">
                                 (${post.rating.count})
                             </span>
@@ -56,11 +55,11 @@ const displayPost = (posts) => {
 
                     <!-- Buttons -->
                     <div class="flex gap-4 pt-2">
-                        <button class="btn btn-outline flex-1">
-                            👁 Details
+                        <button class="btn btn-outline flex-1 details-btn">
+                           <i class="fa-regular fa-eye"></i> Details
                         </button>
                         <button class="btn btn-primary flex-1">
-                            🛒 Add
+                           <i class="fa-solid fa-cart-shopping"></i> Add
                         </button>
                     </div>
 
@@ -69,8 +68,40 @@ const displayPost = (posts) => {
         `;
 
         cardContainer.appendChild(postCard);
+
+        // Add event listener for modal
+        const detailsButton = postCard.querySelector(".details-btn");
+        detailsButton.addEventListener("click", () => showModal(post));
     });
 };
+
+// Function to show modal
+const showModal = (post) => {
+    document.getElementById("modal-image").src = post.image;
+    document.getElementById("modal-image").alt = post.title;
+    document.getElementById("modal-title").textContent = post.title;
+    document.getElementById("modal-category").textContent = post.category;
+    document.getElementById("modal-description").textContent = post.description;
+    document.getElementById("modal-price").textContent = `$${post.price}`;
+    document.getElementById("modal-rate").textContent = post.rating.rate;
+    document.getElementById("modal-count").textContent = `(${post.rating.count})`;
+
+    // Show modal
+    document.getElementById("product-modal").classList.remove("hidden");
+};
+
+// Close modal
+document.getElementById("close-modal").addEventListener("click", () => {
+    document.getElementById("product-modal").classList.add("hidden");
+});
+
+// Optional: close modal when clicking outside content
+document.getElementById("product-modal").addEventListener("click", (e) => {
+    if (e.target.id === "product-modal") {
+        document.getElementById("product-modal").classList.add("hidden");
+    }
+});
+
 
 loadPost()
 
