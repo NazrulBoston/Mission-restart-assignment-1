@@ -1,3 +1,4 @@
+
 ## What is the difference between null and undefined?
 Ans: Undefined means a variable was created but not given a value. Null means the value is empty on purpose. 
 Undefined is automatic, null is set by the programmer.
